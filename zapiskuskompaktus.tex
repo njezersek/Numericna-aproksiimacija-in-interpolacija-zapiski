@@ -1,4 +1,4 @@
-\documentclass[a3paper,8pt]{extarticle}
+\documentclass[a3paper,9pt]{extarticle}
 % \usepackage[utf8]{inputenc}
 \usepackage[mathletters]{ucs}
 \usepackage[utf8x]{inputenc}
@@ -23,7 +23,7 @@
 
 \frenchspacing % No double spacing between sentences
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.3em}
+\setlength{\parskip}{1em}
 
 \usepackage{mathtools}
 \usepackage{blkarray, bigstrut} %
@@ -174,10 +174,14 @@ Prostor $X$ je \textbf{strogo normiran}, če $\forall x, y \in X$:
 
 Prostor $X$ je strogo normiran $\iff$ je zaprta enotska krogla strogo konveksna.
 
-\begin{align*}
-	M \text{ knv.} &\iff \forall x, y \in M, \lambda \in [0, 1] : \ \lambda x + (1-\lambda) y \in M \\
-	M \text{ s.k. } &\iff \forall x \neq y \in M, \lambda \in (0, 1) : \lambda x + (1-\lambda) y \in M^\circ
-\end{align*}
+\begin{multline*}
+	M \text{ konveksna} \iff \\
+	\forall x, y \in M, \lambda \in [0, 1] : \ \lambda x + (1-\lambda) y \in M \\
+\end{multline*}
+\begin{multline*}
+	M \text{ strogo konveksna } \iff \\
+	\forall x \neq y \in M, \lambda \in (0, 1) : \lambda x + (1-\lambda) y \in M^\circ
+\end{multline*}
 
 Normiran vektorski prostor $X$ je \textbf{enakomerno konveksen}, če $\forall \epsilon > 0 : \ \exists \delta > 0$, da za vsak par elementov $f, g \in X$ z $\| f \| = \| g \| = 1$ velja
 \[ \left\| \frac{1}{2} (f+g) \right\| > 1 - \delta \implies \| f-g \| < \epsilon \]
@@ -434,9 +438,167 @@ za $i = n-1, \dots, 0$:
 vrni $v_0$
 \end{koda}
 
+\subsection*{Odsekoma polinomska interpolacija}
+Interval $[a, b]$ razdelimo na $n$ podintervalov $[x_i, x_{i+1})$ glede na \textit{stične točke} $\underline{x} = (x_i)_{i=0}^n$ kjer velja 
+\[ a = x_0 < x_1 < \dots < x_n = b \]
 
+Na vsakem podintervalu bo odsekoma polinomska funkcija enaka nekemu polinomu stopnje $k$.
+
+V notranjih stičnih točkah predpišemo \textit{stopnjo gladkosti} $\underline{\nu} = (\nu_i)_{i=1}^{n-1}$. Zahtevamo, da se v stični točki $x_i$ levi in desni odsek ujemata v prvih $\nu_i-1$ odvodih.
+
+Prostor odsekoma polinomskih funkcij označimo z
+\begin{multline*}
+	P_{k, \underline{x}, \underline{\nu}} = \Big\{ f: [a,b] \to \mathbb{R} : \\
+	 f|_{(x_i, x_{i+1})} \in \mathbb{P}_k,\ \lim_{x \uparrow x_i} f^{(l)}(x) = \lim_{x \downarrow x_i} f^{(l)}(x),  \\
+	 \forall i = 1, \dots , n-1 \ \forall l = 0, \dots, \nu_i-1 \Big\}
+\end{multline*}
+
+\[ \dim P_{k, \underline{x}, \underline{\nu}} = n(k+1) - \sum_{i=1}^{n-1} \nu_i \]
+
+Zaporedje \textit{vozlov} definiramo zaporedje stičnih točk, s kratnostjo $r_i = k + 1 - \nu_i$ (v robnih stičnih točkah je $r_i = k+1$).
+\begin{gather*}
+	\underline{t} = ({\scriptstyle \underbrace{ x_0,\dots,x_0}_{r_0 = k + 1}, \dots, \underbrace{x_i, \dots, x_i}_{r_i = k + 1 - \nu_i}, \dots, \underbrace{x_n,\dots,x_n}_{r_n = k+1}}) = (t_i)_{i=1}^N
+\end{gather*}
+
+Poseben primer:
+
+V stičnih točkah zahtevamo zveznost v $k-1$ odvodih: $\nu_i = k$ in $r_i = 1$ za $i = 1, \dots, n-1$. 
+\[ S_{k, \underline{x}} = \Big\{ f: [a,b] \to \mathbb{R} :\ f|_{(x_i, x_{i+1})} \in \mathbb{P}_k \Big\} \cap \mathcal{C}^{k-1}([a,b])\]
+
+\[ \dim S_{k, \underline{x}}  = n + k\]
+
+\subsubsection{Zvevne odsekoma linearne funkcije}
+Funkcije $H_0, \dots, H_n$ so baza za $S_{1,\underline{x}}$
+\[
+	H_i(x) = \begin{cases}
+		\frac{x-x_{i-1}}{x_i - x_{i-1}} & x \in [x_{i-1}, x_i) \\
+		\frac{x_{i+1}-x}{x_{i+1} - x_i} & x \in [x_i, x_{i+1}) \\
+		0 & \text{sicer}
+	\end{cases}
+\]
+
+Interpolacija v prostoru $S_{1, \underline{x}}$ interpolira vrednosti v stičnih točkah
+\begin{align*}
+	I_{1, \underline{x}} : \mathcal{C}([a,b]) &\to S_{1, \underline{x}} \\
+	f & \mapsto I_{1, \underline{x}} f = \sum_{i=0}^n f(x_i) H_i
+\end{align*}
+
+Za $f \in \mathcal{C}^2([a,b])$ velja ($\Delta x = \max_i \Delta x_i$):
+\[ \| f - I_{1,\underline{x}} f \|_{\infty, [a,b]} \leq \frac{(\Delta x)^2}{8} \| f''\|_{\infty, [a,b]}\]
+
+\[ \| I_{1, \underline{x}} \|_\infty = \sup_{f \neq 0} \frac{\| I_{1, \underline{x}} f \|_\infty}{\| f \|_\infty} \leq 1 \]
+\begin{multline*}
+	\| f - I_{1,\underline{x}} f \|_{\infty} \\ \leq (1 + \| I_{1, \underline{x}} \|_\infty) \text{dist}(f, S_{1, \underline{x}}) = 2\text{dist}(f, S_{1, \underline{x}})
+\end{multline*}
+
+\subsubsection*{Aproksimacija v $S_{1, \underline{x}}$ po MNK}
+\[ \langle g, h \rangle = \int_{a}^{b} g(x) h(x) dx \]
+
+\begin{align*}
+	L_{1, \underline{x}} : \mathcal{C}([a,b]) &\to S_{1, \underline{x}} \\
+	f &\mapsto L_{1, \underline{x}} f = \sum_{i=0}^{n} \alpha_i H_i
+\end{align*}
+Koeficiente $\underline{\alpha} = (\alpha)_{i=0}^n$ dobimo iz sistema enačb
+\[ 
+	\underbrace{
+	\begin{bmatrix}
+		\langle H_i, H_j \rangle
+	\end{bmatrix}_{i,j=0}^n}_{\text{Grammova matrika $G$}}
+	\underline{\alpha} = 
+	\begin{bmatrix}
+		\langle f, H_i \rangle
+	\end{bmatrix}_{i=0}^n
+\]
+$G$ je tridiagonalna matrika.
+
+Velja $\| L_{1, \underline{x}} \|_\infty \leq 3$.
+\[ \| f - L_{1, \underline{x}} \|_\infty \leq 4\text{dist}(f,  S_{1, \underline{x}})\]
+\[ \| f - L_{1, \underline{x}} \|_\infty \leq 4 \| f \|_\infty \]
+
+\subsubsection{Interpolacijski kubični zlepki}
+Označimo zožitev zlepka na interval $[x_i, x_{i+1}]$ s $p_i \in \mathbb{P}_3$.
+
+Želimo 
+$p_i(x_i) = f(x_i)$ in $p_i(x_{i+1}) = f(x_{i+1})$
+kjer je $f$ izbrana funkcija, ki jo interpoliramo.
+
+Označimo $p_i'(x_i) = s_i$ in $p_i'(x_{i+1}) = s_{i+1}$.
+
+Z Newtnovo obliko interpolacijskega polinoma dobimo:
+\begin{multline*}
+	p_i(x) = f(x_i) + s_i(x-x_i) + \frac{[x_i, x_{i+1}]f - s_i}{\Delta x_i} (x-x_i)^2 + \\
+	+ \frac{s_{i+1} + s_{i+1} + 2[x_i, x_{i+1}]f}{(\Delta x_i)^2} (x-x_i)^2 (x-x_{i+1})
+\end{multline*}
+za $i = 0, \dots, n-1$.
+
+Če za $s_i$ vzamemo kar vrednosti odvoda $f$ v stičnih točkah, dobimo \textbf{Hermitov kubični zlepek}.
+\begin{align*}
+	H_{3, \underline{x}} : \mathcal{C}^1([a,b]) &\to S_{3, \underline{x}}^1 \\
+	f &\mapsto H_{3, \underline{x}} f \quad H_{3, \underline{x}} f|_{[x_i, x_{i+1}]} = p_i
+\end{align*}
+Za $f \in \mathcal{C}^4([a,b])$ velja
+\[ \| f - H_{3, \underline{x}} f \|_\infty \leq \frac{1}{384}(\Delta x)^4 \| f^{(4)} \|_\infty = O((\Delta x)^4)\]
+
+Če $s_i$ izberemo tako, da velja $p_i''(x_{i+1}) = p_{i+1}''(x_{i+1})$ za $i = 0, \dots, n-2$ in $s_0 = f'(x_0)$ in $s_n = f'(x_n)$, dobimo \textbf{poln kubični zlepek}.
+
+\begin{align*}
+	I_{3, \underline{x}} : \mathcal{C}^1([a,b]) &\to S_{3, \underline{x}} \\
+	f &\mapsto I_{3, \underline{x}} f \quad I_{3, \underline{x}} f|_{[x_i, x_{i+1}]} = p_i
+\end{align*}
+
+Rešimo sistem enačb za $s_i$:
+\begin{multline*}
+	\frac{1}{\Delta x_{i-1}} s_{i-1} + 2\left(\frac{1}{\Delta x_{i-1}} + \frac{1}{\Delta x_i}\right) s_i + \frac{1}{\Delta x_i} s_{i+1} = \\
+		= 3\left(\frac{[x_{i-1}, x_i]f}{\Delta x_{i-1}} + \frac{[x_i, x_{i+1}]f}{\Delta x_i}\right) 
+\end{multline*}
+kjer gre $i = 1, \dots, n-1$.
+
+Za $f \in \mathcal{C}^2([a,b])$ velja
+\[ \| f - I_{3, \underline{x}} f \|_\infty \leq \frac{1}{2}(\Delta x)^2 \| f'' \|_\infty = O((\Delta x)^2)\]
+Za $f \in \mathcal{C}^4([a,b])$ velja
+\[ \| f - I_{3, \underline{x}} f \|_\infty \leq \frac{1}{16}(\Delta x)^4 \| f^{(4)} \|_\infty = O((\Delta x)^4)\]
+
+\subsection{B-zlepki}
+\[B_{i,k}(x) = (t_{i+k+1} - t_i)[t_i, t_{i+1}, \dots, t_{i+k+1}]( \cdotp - x)_+^k\]
+\[ (t-x)_+^k = max(0, (t-x)^k) \quad (t-x)_+^0 = \begin{cases}
+	0 & t - x \leq 0 \\
+	1 & \text{sicer}
+\end{cases}\]
+
+$B_{i,k}$ tvorijo bazo za $P_{k, \underline{x}, \underline{\nu}}$.
+
+B-zlepke lahko izrazimo z rekurzivno formulo:
+\begin{align*}
+	\omega_{i,k}(x) &= \begin{cases}
+		\frac{x-t_i}{t_{i+k} - t_i} & t_i \neq t_{i+k} \\
+		0 & \text{sicer}
+	\end{cases} \\
+	B_{i,0}(x) &= \begin{cases}
+		1 & x_i \leq x < x_{i+1} \\
+		0 & \text{sicer}
+	\end{cases} \\
+	B_{i,k}(x) &= \omega_{i, k}(x) B_{i,k-1}(x) + (1-\omega_{i+1, k}(x)) B_{i+1,k-1}(x)
+\end{align*}
+
+Za nosilec B-zlepka velja
+$\text{supp} B_{i,k} \subseteq [t_i, t_{i+k+1}] $
+
+$B_{i,k}$ je ne negativen na $[t_i, t_{i+k+1}]$ in strogo pozitiven na $(t_i, t_{i+k+1})$.
+
+B-zlepki nad zaporedjem vozlov $\underline{t}$ tvorijo razčlenitev enote na intervalu $I_{k, \underline{t}} = [t_{k+1}, t_{N-k}]$:
+\[ \sum_{i=0}^{N-k-1} B_{i,k} = 1\]
+
+\subsubsection{De Boorov algoritem}
+\begin{koda}
+vhod: $\underline{t}$, $\underline{\alpha} = (\alpha_i)_{i=1}^{N-k-1}$, $x \in I_{k, \underline{t}}$
+doloci indeks $j$ tako, da bo $x \in [t_j, t_{j+1})$
+za $i = j-k, \dots, j$:
+	$\alpha_i^{[0]} \leftarrow \alpha_i$
+za $l = 1, \dots, k$:
+	za $i = j-k+l, \dots, j$:
+		$\alpha_i^{[l]} \leftarrow \alpha_{i-1}^{[l-1]} (1 - \omega_{i, k-l+1}(x)) + \alpha_i^{[l-1]} \omega_{i, k-l+1}(x)$
+vrni $\alpha_j^{[k]}$
+\end{koda}
 
 \end{multicols}
-
-
 \end{document}
