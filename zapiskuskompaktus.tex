@@ -1,0 +1,293 @@
+\documentclass[a3paper,8pt]{extarticle}
+% \usepackage[utf8]{inputenc}
+\usepackage[mathletters]{ucs}
+\usepackage[utf8x]{inputenc}
+
+\usepackage{fancyhdr}
+
+\usepackage[pdftex]{graphicx} % Required for including pictures
+\usepackage[pdftex,linkcolor=black,pdfborder={0 0 0}]{hyperref} % Format links for pdf
+\usepackage{calc} % To reset the counter in the document after title page
+\usepackage{enumitem} % Includes lists
+
+\usepackage{textcomp}
+\usepackage{eurosym}
+
+\usepackage{ dsfont } % font za množice
+% tabele
+\usepackage{array}
+\usepackage{wrapfig}
+
+\usepackage{tikz,forest}
+\usetikzlibrary{arrows.meta}
+
+\frenchspacing % No double spacing between sentences
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3em}
+
+\usepackage{mathtools}
+\usepackage{blkarray, bigstrut} %
+
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage{tabularx}
+\usepackage[landscape]{geometry}
+\usepackage{listings}
+\usepackage{inconsolata}
+%\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
+%\usepackage{accents}
+\usepackage{pdfpages}
+
+\newcommand{\vect}[1]{\accentset{\rightharpoonup}{#1}}
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{0}
+%\setlength{\parindent}{0pt}
+%\setlength{\parskip}{0pt plus 0.5ex}
+
+% listings okolje za psevdo kodo
+\lstnewenvironment{koda}[1][] %defines the algorithm listing environment
+{   
+    \lstset{ %this is the stype
+        mathescape=true,
+        basicstyle=\small, 
+		columns=flexible,
+        keywordstyle=\bfseries\em,
+        keywords={,vhod, izhod, zacetek, konec, koncamo, ponavljaj, dokler, ce, vrni, za, vsak, vse, v, sicer, alg, def} %add the keywords you want, or load a language as Rubens explains in his comment above.
+        xleftmargin=.1\textwidth,
+		tabsize=4,
+		%frame=leftline,xleftmargin=5pt,xrightmargin=5pt,framesep=5pt,
+		%inputencoding = utf8,
+		extendedchars = true,
+		literate={ž}{{\ˇz}}1 {š}{{\ˇs}}1 {č}{{\ˇc}}1 {Ž}{{\ˇZ}}1 {Š}{{\ˇS}}1 {Č}{{\ˇC}}1,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
+% -----------------------------------------------------------------------
+\begin{document} 
+
+\begin{multicols}{5}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\section{Uporabne formule}
+\[ (x+y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k}y^{k} \]
+
+\[\binom{n}{k} = \frac{n^{\underline{k}}}{k!} = \frac{n!}{k!(n-k)!} = \binom{n}{n-k}\]
+
+\section*{Aproksimacija}
+\subsection{Bernsteinovi polinomi}
+
+\begin{align*}
+	B_i^n(x) &= \binom{n}{i} x^i (1-x)^{n-i} \qquad & i = 0, \dots, n \\
+	B_i^n(x) &= \sum_{j=i}^n (-1)^{j-i} \binom{n}{j} \binom{j}{i} x^j \qquad & i = 0, \dots, n \\
+	B_i^n(x) &= (1-x) B_i^{n-1}(x) + x B_{i-1}^{n-1}(x)  \\ 
+\end{align*}
+
+Lastnosti:
+\begin{align*}
+	B_i^n(x) &> 0 \qquad \forall x \in [0, 1] \\
+	B_i^n(x) &= B_{n-i}^n(1-x) \\
+	\left[B_i^n(x)\right]' &= n \left( B_{i-1}^{n-1}(x) - B_i^{n-1}(x)\right) \\
+	\sum_{i=0}^n B_i^n(x) &= 1 \\
+	\int B_i^n(x) dx &= \frac{1}{n+1} \sum_{j=i+1}^{n+1} B_j^{n+1}(x) \\
+	\int_0^1 B_i^n(x) dx &= \frac{1}{n+1}
+\end{align*}
+
+\textbf{Bernsteinov operator} funkciji $f: [0, 1] \to \mathbb{R}$ priredi polinom stopnje $\leq n$:
+\[ \big(B_n f\big)(x) = \sum_{i=0}^{n} f\left(\frac{i}{n}\right)  B_i^n(x)\]
+
+Odvod:
+\[ \big(B_n f\big)'(x) = n\sum_{i=0}^{n-1} \Delta f\left(\frac{i}{n}\right)  B_i^{n-1}(x) \]
+kjer je $ \Delta f\left(\frac{i}{n}\right) = f\left(\frac{i+1}{n}\right) - f\left(\frac{i}{n}\right)$.
+
+Konvergenca:
+\[\lim_{n \to \infty} \| f - B_n f \|_{\infty, [0,1]} = 0 \qquad \forall f \in \mathcal{C}([0,1]) \]
+
+\textbf{Kantorovičev operator} integrabilni funkciji $f: [0, 1] \to \mathbb{R}$ priredi polinom stopnje $\leq n$:
+\[ \big(K_n f\big)(x) = \sum_{i=0}^{n} f_{n,i} B_i^n(x) \qquad f_{n,i} = (n+1) \int_{\frac{i}{n+1}}^{\frac{i+1}{n+1}} f(t) dt \]
+
+Za $F(x) = \int_0^x f(t) dt$ velja:
+\[\big(B_{n+1} F \big) = K_n f \]
+
+Konvergenca:
+\[ \lim_{n \to \infty} \| f - K_n f \|_{\infty, [0, 1]} = 0 \qquad \forall f \in \mathcal{C}([0,1])\]
+
+% \subsection{Zvezna odsekoma linearna interpolacija}
+
+\subsection*{Element najboljše aproksimacije}
+Naj bo $X$ normiran vektorski prostor z normo $\| \cdot \|$ in $S \subset X$ podprostor.
+
+$s^* \in S$ je \textit{el. najboljše aproksimacije} za $x \in X$, če velja:
+\[ \| x - s^* \| = \inf_{s \in S} \| x - s \| = \text{dist}(x, S) \]
+
+
+Prostor $X$ je \textbf{strogo normiran}, če $\forall x, y \in X$:
+\[ \| x + y \| = \| x \| + \| y \| \implies \exists \lambda \in \mathbb{R} : \ x = \lambda y  \]
+
+Če je $X$ strogo normiran in v $S \subset X$ obstaja e. n. a. za $x \in X$, potem je ta enolično določen.
+
+
+Prostor $X$ je strogo normiran $\iff$ je zaprta enotska krogla strogo konveksna.
+
+\begin{align*}
+	M \text{ knv.} &\iff \forall x, y \in M, \lambda \in [0, 1] : \ \lambda x + (1-\lambda) y \in M \\
+	M \text{ s.k. } &\iff \forall x \neq y \in M, \lambda \in (0, 1) : \lambda x + (1-\lambda) y \in M^\circ
+\end{align*}
+
+\subsection*{Najboljša polinomska enakomerna aproksimacija}
+Iščemo polinom najboljše enakomerne aproksimacije $p^*$ stopnje $\leq n$ za $f \in \mathcal{C}([a, b])$. 
+
+\textbf{1. Remesov postopek} 
+
+\begin{koda}
+vhod: $f$, $[a, b]$, $n$.
+izberi $E_0 = \left\{ x_i\ |\ a \leq x_0 < \dots < x_n+1 \leq b \right\}$
+ponavljaj za $k = 0, 1, \dots$
+	poisci $p_{E_k}^*$ p.n.e.a. $\text{za}$ $f$ na mnozici $E_k$ tako, da resis 
+		$f(x_i) - p_{E_k}^*(x_i) = (-1)^i m$  $\text{za } i = 0, \dots, n+1$
+		(spremenljivke so $m$ in koeficienti polinoma $p_{E_k}^*$)
+	poisci ekstrem residuala $r_k = f - p_{E_k}^*$
+	doloci $u \in [a, b]$, da je $| r_k(u) | = \| r_k \|_{\infty, [a, b]}$
+	ce $| r_k(u) | - |m| < \varepsilon$
+		vrni $p_{E_k}^*$ 
+	doloci $E_{k+1}$ tako, da zamenjas nek $x_i$ z $u$, tako da 
+	ohranis alternacijo residuala 
+\end{koda}
+
+\textbf{2. Remesov postopek}
+Deluje podobno kot 1. le, da množico $E_{k+1}$ določimo na sledeč način:
+
+\begin{align*}
+	z_0 &= a \\
+	z_i &\in [x_{i-1}, x_i]  \quad \text{ničle residuala } r(z_i) = 0 \\
+	z_{n+1} &= b \\
+\end{align*}
+
+\[ u_i = \mathop{\text{argmax}}\limits_{u \in [z_i, z_{i+1}]} r(u)\]
+
+\[ E_{k+1} = \left\{ u_i \ | \ a \leq u_0 < \dots < u_n \leq b \right\} \]
+
+\textit{Ideja: } med $z_i$ in $z_{i+1}$ za $i = 0, \dots, n+1$ poiščemo točko $u_i$, v kateri residual doseže ekstrem hkrati pa pazimo na alternacijo residuala.
+
+\subsection*{Posplošitev najboljše polinomske enak. aproks.}
+
+Posplošeni polinom za sistem funkcij $F = \{f_i | i\}$
+\[ p = \sum_{i=0}^n \alpha_i f_i \]
+
+\subsubsection*{Haarov pogoj}
+Množica zveznih funkcij $F = \{ f_0, \dots, f_n\}$ na $[a, b]$ zadošča \textit{Haarovemu pogoju}, če je za poljuben izbor $n+1$ paroma različnih točk $(x_i)_i$  posplošena Vandermondova matrika $V_F(x)$ obrnljiva:
+\[ V_F(x) = \begin{bmatrix}
+	f_j(x_i)
+\end{bmatrix}_{i,j=0}^n \]
+
+$F$ zadošča Haarovemu pogoju $\implies$ $F$ je linearno neodvisna.
+
+$F$ ki zadošča Haarovemu pogoju, je \textbf{Čebišev sistem funkcij}, če pa zahtevamo Harrov pogoj le za $x_i \in [a, b]$, pa pravimo, da je $F$ \textbf{šibki Čebišev sistem funkcij}. 
+
+Če $F$ zadošča Haarovemu pogoju, lahko za iskanje e. n. a. iz prostora $\text{Lin}(F)$ uporabimo \textbf{Remesov postopek}.
+
+\subsubsection*{Polinomi Čebiševa}
+\[ T_n(x) = \cos(n \arccos x) \qquad x \in [-1, 1] \]
+Rekurzivna zveza:
+\[ T_{n}(x) = 2x T_{n-1}(x) - T_{n-2}(x) \qquad n \geq 2 \]
+\[ T_0(x) = 1 \qquad T_1(x) = x \]
+
+$T_n$ ima ničle v $\cos \frac{(2k-1)\pi}{2n}$ za $k = 1, \dots, n$ ekstreme pa doseže v $\cos(\frac{k\pi}{n})$ za $k = 0, \dots, n$.
+
+$p \in \mathbb{P}_{n-1}$, ki na $[-1, 1]$ najbolje aproksimira $\sum_{i=0}^{n} a_i T_i(x)$ je kar $\sum_{i=0}^{n-1} a_i T_i(x)$.
+
+Polinomi Čebiševa tvorijo Čebišev sistem funkcij.
+
+\subsection*{Aproksimacija po metodi najmanjših kvadratov}
+Naj bo $X$ vektorski prostor nad $\mathbb{R}$ s skalarnim produktom $\langle \cdot, \cdot \rangle$ in normo $\| \cdot \|_2 = \sqrt{\langle \cdot, \cdot \rangle}$ 
+\[ S = \text{Lin}\{l_1, l_2, \dots, l_n\} \subseteq X \]
+
+Iščemo \textbf{element najboljše aproksimacije po MNK} $f^* \in S$, da $\| f - f^* \| = \min_{s \in S} \| f - s \| $
+
+\textit{Izrek:} $f^*$ je el. najboljše aproksimacije po MNK $\iff$ $f-f^* \perp S$ $\iff$
+$f-f^* \perp l_i \quad \forall i = 1,\dots n$
+
+\[ f^* = \alpha_1 l_1 + \dots + \alpha_n l_n\]
+
+Iz zgornjega izreka sledi:
+\begin{align*}
+\langle f - f^*, l_i \rangle &= 0 \quad \forall i\\
+\langle f - \sum_{j=1}^n \alpha_j l_j, l_i \rangle &= 0 \quad \forall i\\
+\langle f, l_i\rangle - \sum_{j=1}^n \alpha_j \langle  l_j, l_i \rangle &= 0 \quad \forall i\\
+\end{align*}
+V matrični obliki:
+\[
+    \underbrace{\begin{bmatrix}
+        \langle l_1, l_1 \rangle & \dots & \langle l_n, l_1 \rangle \\
+        \vdots & \ddots & \vdots \\
+        \langle l_1, l_n \rangle & \dots & \langle l_n, l_n \rangle
+    \end{bmatrix}}_{\text{Grammova matrika $G$}}
+    \begin{bmatrix}
+        \alpha_1 \\
+        \vdots \\
+        \alpha_n
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \langle f, l_1 \rangle \\
+        \vdots \\
+        \langle f, l_n \rangle
+    \end{bmatrix}
+\]
+
+$G$ je simetrična pozitivno definitna matrika. Numerično tak sistem rešimo z razcepom Choleskega.
+
+
+Reševanje sistema linearnih enačb se izognemo tako, da bazo za $S$ ortonormiramo. Tedaj je $G = I$ in
+\[ f^* = \sum_{i=1}^n \langle f, l_i \rangle l_i \]
+
+\subsubsection*{Gram-Schmidtova ortogonalizacija}
+Definirajmo projekcijo vektorja $v$ na $u$
+\[\textmd{proj}_u(v) = \frac{\langle v,u \rangle}{\langle u,u \rangle}u\]
+Če želimo \emph{orotogonalizirati} $k$ linearno neodvisnih vektorjev $v_1, ..., v_k$, uporabimo postopek:
+\begin{equation*}
+    \begin{aligned}
+    u_1 &= v_1 \\
+    u_2 &= v_2 - \textmd{proj}_{u_1}(v_2) \\
+    u_3 &= v_3 - \textmd{proj}_{u_1}(v_3) - \textmd{proj}_{u_2}(v_3) \\
+    &\; \ \vdots \\
+    u_k &= v_k - \sum_{j=1}^{k-1} \textmd{proj}_{u_j}(v_k)
+    \end{aligned}
+\end{equation*}
+
+\subsubsection*{Legendrovi polinomi}
+\[ P_n(x) = \frac{1}{2^n n!} \frac{d^n}{dx^n} \left[ (x^2 - 1)^n \right] \]
+
+tvorijo ortogonalno bazo za $\mathcal{P}_n$ s standardnim skalarnim produktom.
+
+
+\end{multicols}
+
+
+\end{document}
