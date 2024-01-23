@@ -100,6 +100,25 @@
 
 \[\binom{n}{k} = \frac{n^{\underline{k}}}{k!} = \frac{n!}{k!(n-k)!} = \binom{n}{n-k}\]
 
+Funkcija $\Gamma$
+\begin{itemize}
+    \item $ \Gamma(s) = \int_0^{\infty} x^{s-1} e^{-x} dx, \qquad \forall s > 0 $
+    \item $\Gamma(1) = 1$
+    \item $\Gamma(s+1) = s \Gamma(s)$
+    \item $\Gamma(\frac{1}{2}) = \sqrt{\pi}$
+    \item $\Gamma(n+1) = n!\qquad n\in \mathbb{N}$
+    \item $\Gamma(x)\Gamma(x+1) = \frac{\pi}{\sin(\pi x)}$
+\end{itemize}
+
+Funkcija $B$
+\begin{itemize}
+    \item $B(p,q) = \int_0^1 x^{p-1} (1-x)^{q-1} dx, \qquad \forall p,q > 0$
+    \item $\displaystyle B(p,q) = \int_0^{\infty} \frac{u^{p-1}}{(1+u)^{p+q}}du $
+    \item $\displaystyle B(p,q) = \frac{\Gamma(p) \Gamma(q)}{\Gamma(p+q)}$
+    \item $\frac{1}{2} B(p,q) = \displaystyle \int_0^{\frac{\pi}{2}} (\sin x)^{2p-1} (\cos x)^{2q-1}$
+    \item simetričnost: $B(p,q) = B(q,p)$
+\end{itemize}
+
 \section*{Aproksimacija}
 \subsection{Bernsteinovi polinomi}
 
@@ -111,7 +130,7 @@
 
 Lastnosti:
 \begin{align*}
-	B_i^n(x) &> 0 \qquad \forall x \in [0, 1] \\
+	B_i^n(x) &\geq 0 \qquad \forall x \in [0, 1] \\
 	B_i^n(x) &= B_{n-i}^n(1-x) \\
 	\left[B_i^n(x)\right]' &= n \left( B_{i-1}^{n-1}(x) - B_i^{n-1}(x)\right) \\
 	\sum_{i=0}^n B_i^n(x) &= 1 \\
@@ -159,6 +178,9 @@ Prostor $X$ je strogo normiran $\iff$ je zaprta enotska krogla strogo konveksna.
 	M \text{ knv.} &\iff \forall x, y \in M, \lambda \in [0, 1] : \ \lambda x + (1-\lambda) y \in M \\
 	M \text{ s.k. } &\iff \forall x \neq y \in M, \lambda \in (0, 1) : \lambda x + (1-\lambda) y \in M^\circ
 \end{align*}
+
+Normiran vektorski prostor $X$ je \textbf{enakomerno konveksen}, če $\forall \epsilon > 0 : \ \exists \delta > 0$, da za vsak par elementov $f, g \in X$ z $\| f \| = \| g \| = 1$ velja
+\[ \left\| \frac{1}{2} (f+g) \right\| > 1 - \delta \implies \| f-g \| < \epsilon \]
 
 \subsection*{Najboljša polinomska enakomerna aproksimacija}
 Iščemo polinom najboljše enakomerne aproksimacije $p^*$ stopnje $\leq n$ za $f \in \mathcal{C}([a, b])$. 
@@ -284,7 +306,128 @@ Definirajmo projekcijo vektorja $v$ na $u$
 \subsubsection*{Legendrovi polinomi}
 \[ P_n(x) = \frac{1}{2^n n!} \frac{d^n}{dx^n} \left[ (x^2 - 1)^n \right] \]
 
-tvorijo ortogonalno bazo za $\mathcal{P}_n$ s standardnim skalarnim produktom.
+tvorijo ortogonalno bazo za $\mathcal{P}_n$ s glede na skalarni produkt:
+\[ \langle g, h  \rangle = \int_{-1}^{1} g(x) h(x) dx \]
+
+\subsubsection{Tričlenska rekurzivna formula}
+\begin{gather*}
+	\widetilde{Q}_n = (x - \alpha_n) Q_{n-1} - \beta_n Q_{n-2} \qquad Q_n = \frac{\widetilde{Q}_n}{\beta_{n+1}} \\	
+	\alpha_n = \langle xQ_{n-1}, Q_{n-1} \rangle \qquad \beta_n = \langle \widehat{Q}_{n-1}, \widehat{Q}_{n-1} \rangle ^{\frac{1}{2}} \\
+\end{gather*}
+
+tvori ortonormirane (glede na isti skalarni produkt kot ga uporabljamo pri Legendrovih polinomih) polinome $Q_n$ stopnje $n$.
+
+\section*{Interpolacija}
+Naj bo $X$ normiran vektorski prostor z normo $\| \cdot \|$ in $S \subset X$ podprostor tako, da
+\[ S = \text{Lin} \{ \varphi_1, \dots , \varphi_n \}\]
+
+Za dane linearne funkcionale $(\lambda_i : X \to \mathbb{R})_{i=1}^n$ in vrednosti $r = (r_i)_{i=1}^n$ iščemo koeficiente $(\alpha_i)_{i=1}^n$, da bo za \textit{interpolant} $p = \sum_{i=1}^n \alpha_i \varphi_i $ veljalo
+\[ \lambda_i p = r_i \qquad i, j = 1, \dots, n \]
+
+pri interpolaciji izbranega elementa $f \in X$ določimo
+\[ r_i = \lambda_i f \]
+
+Interpolacijski problem je \textbf{korekten}, kadar interpolant obstaja in je enolično določen.
+
+\subsection*{Polinomska interpolacija}
+$f \in \mathcal{C}([a,b])$, $a \leq x_0 < \dots < x_n \leq b$. Iščemo polinom
+\[ p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_n x^n \]
+ki zadošča pogoju $f(x_i) = p(x_i)$ za $i = 0, 1, \dots, n$. 
+\[
+\underbrace{\begin{bmatrix}
+    1 & x_0 & x_0^2 & \dots & x_0^n \\
+    1 & x_1 & x_1^2 & \dots & x_1^n \\
+    \vdots & &        &       & \vdots \\
+    1 & x_n & x_n^2 & \dots & x_n^n \\
+\end{bmatrix}}_{\text{Vandermondova matrika $V$}}
+\begin{bmatrix}
+    a_0 \\
+    a_1 \\
+    \vdots \\
+    a_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+    f(x_0) \\
+    f(x_1) \\
+    \vdots \\
+    f(x_n) \\
+\end{bmatrix}
+\]
+\[ det V = \prod_{0 \leq j < i \leq n} (x_i - x_j) \neq 0\]
+Vidimo, da je polinom $p$ enolično določen.
+
+\subsubsection*{Lagrangeova oblika interpolacijskega polinoma}
+\[ l_{i, n}(x) = \prod_{\substack{j=0 \\ j\neq i}}^n \frac{x-x_j}{x_i - x_j} \qquad i = 0, \dots, n \]
+
+Velja:
+\[ 
+l_{i,n}(x_j) = 
+\begin{cases}
+    1 & i = j \\
+    0 & \text{sicer}
+\end{cases}
+\]
+\textit{Lema:} $l_{i, n}$ so baza za $\mathbb{P}_n$.
+
+
+Interpolacijski polinom v lagrangeovi obliki:
+\[ \big( I_n f \big)(x) = p(x) = \sum_{i=0}^n f(x_i) l_{i,n}(x)\]
+
+$I_n$ je linearen operator. Je tudi \textit{projektor} na $\mathbb{P}_n$ ($\forall q \in \mathbb{P}_n : I_n q = q$).
+
+\[ f(x) - p(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!} \omega(x) \]
+
+\[ \omega(x) = \prod_{i=0}^n (x-x_i)\]
+
+Nevilleova shema za izračun $p = p_{0,n}$:
+\begin{align*}
+	p_{i, 0}(x) &= f(x_i) \\
+	p_{i, k}(x) &= p_{i, k-1}(x) \frac{x-x_{i+k}}{x_i + x_{i+k}} + p_{i+1, k-1}(x) \frac{x-x_i}{x_{i+k} - x_i} \\
+\end{align*}
+
+\subsubsection*{Newtonova oblika zapisa interpolacijskega polinoma}
+
+Za bazo izberemo prestavljene potence: $1$, $(x-x_0)$, $(x-x_0)(x-x_1)$, \dots  
+
+
+\textbf{Deljena diferenca} $[x_0, x_1, \dots, x_k] f$ je vodilni koeficient interpolacijskega polinoma
+stopnje $k$, ki se s funkcijo $f$ ujema v točkah $x_0, x_1, \dots, x_k$. Sledi:
+\[ p_k(x) = p_{k-1}(x) + [x_0, x_1, \dots, x_k] f (x-x_0)\dots (x-x_{k-1})\]
+Rekurzivna zveza:
+\begin{multline*}
+    [x_i, x_{i+1}, \dots, x_{i+k}]f = \\
+    = \begin{cases}
+        \frac{f^{(k)}(x_i)}{k!} & {\scriptstyle x_i = x_{i+1} = \dots = x_{i+k}} \\
+        \frac{[x_{i+1}, \dots, x_{i+k}]f- [x_i, \dots, x_{i+k-1}]f}{x_{i+k}-x_i} & {\scriptstyle x_i \neq x_{i+k} }
+    \end{cases} 
+\end{multline*} 
+
+Newtonova oblika zapisa je torej:
+\[ p(x) = \sum_{i=0}^n [x_0, \dots, x_i]f \cdot (x-x_0)\dots (x-x_{i-1}) \]
+
+\textit{Če želimo, da se polinom n neki toči ujema tudi v $k$-tem odvodu, to točko $k$-krat ponovimo.}
+
+\[ f(x) = p(x) + \omega(x) \underbrace{[x_0, \dots, x_n, x] f}_{\frac{f^{(n+1)}(\xi)}{(n+1)!}} \quad \omega(x) = \prod_{i=0}^n (x-x_i)\]
+
+\textbf{Napaka} interpolacije
+\[f(x) - p(x) = [x_0, \dots, x_n, x]f \omega(x) = \omega(x) \frac{f^{(n+1)}(\xi)}{(n+1)!}\]
+
+za nek $\xi \in [a, b]$.
+
+\subsubsection*{Računanje vrednosti interpolacijskega polinoma v Newtonovi obliki}
+\[ p(x) = d_0 1 + d_1(x-x_0) + d_2(x-x_0)(x-x_1) + \dots \]
+
+Posplošen Hornerjev algoritem:
+\begin{koda}
+vhodni podatki: $x_0, \dots, x_n, \ d_0, \dots, d_n, \ x$
+$v_n \leftarrow d_n$
+za $i = n-1, \dots, 0$:
+    $v_i \leftarrow d_i + (x-x_i) v_{i+1}$
+
+vrni $v_0$
+\end{koda}
+
 
 
 \end{multicols}
