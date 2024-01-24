@@ -589,6 +589,11 @@ $B_{i,k}$ je ne negativen na $[t_i, t_{i+k+1}]$ in strogo pozitiven na $(t_i, t_
 B-zlepki nad zaporedjem vozlov $\underline{t}$ tvorijo razčlenitev enote na intervalu $I_{k, \underline{t}} = [t_{k+1}, t_{N-k}]$:
 \[ \sum_{i=0}^{N-k-1} B_{i,k} = 1\]
 
+Za B-zlepke stopnje $k$ in stopnje gladkosti $\nu_i = k-1$ velja:
+\[ \left[\sum_{i=1}^{n+k}  c_i B_{i,k}(x)\right]' = k \sum_{i=1}^{n+k-1} \frac{c_{i+1} - c_i}{t_{i+k+1} - t_{i+1}} B_{i,k-1} \]
+
+\[ \int_a^b \sum_{i=1}^{n+k}  c_i B_{i,k}(x) dx = \frac{1}{1+k} \sum_{i=1}^{n+k}(t_{i+k+1} - t_i)c_i \]
+
 \subsubsection{De Boorov algoritem}
 \begin{koda}
 vhod: $\underline{t}$, $\underline{\alpha} = (\alpha_i)_{i=1}^{N-k-1}$, $x \in I_{k, \underline{t}}$
